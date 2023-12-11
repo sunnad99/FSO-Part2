@@ -2,8 +2,13 @@ const Header = (props) => {
   return <h1>{props.course}</h1>;
 };
 
-const Total = (props) => {
-  return <p>Number of exercises {props.sumOfExercises}</p>;
+const Total = ({ parts }) => {
+  console.log("Entered Total component with props:", parts);
+  const sumOfExercises = parts.reduce((sum, part) => sum + part.exercises, 0);
+
+  console.log("Total sum of all exercises are:", sumOfExercises);
+
+  return <p>Number of exercises {sumOfExercises}</p>;
 };
 
 const Part = ({ part, exercises }) => {
@@ -33,6 +38,7 @@ const Course = ({ course }) => {
     <>
       <Header course={course.name} />
       <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </>
   );
 };
