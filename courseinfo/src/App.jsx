@@ -6,47 +6,61 @@ const Total = (props) => {
   return <p>Number of exercises {props.sumOfExercises}</p>;
 };
 
-const Part = (props) => {
+const Part = ({ part, exercises }) => {
+  console.log("Entered Part Component:", part, exercises);
+
   return (
     <p>
-      {props.part} {props.exercises}
+      {part} {exercises}
     </p>
   );
 };
 
-const Content = (props) => {
+const Content = ({ parts }) => {
+  console.log("Entered Content Component:", parts);
+
+  const rows = parts.map((part) => {
+    return <Part key={part.id} part={part.name} exercises={part.exercises} />;
+  });
+
+  return <div>{rows}</div>;
+};
+
+const Course = ({ course }) => {
+  console.log("Entered Course Component with props:", course);
+
   return (
-    <div>
-      <Part part={props.part1} exercises1={props.exercises1} />
-      <Part part={props.part2} exercises1={props.exercises2} />
-      <Part part={props.part3} exercises1={props.exercises3} />
-    </div>
+    <>
+      <Header course={course.name} />
+      <Content parts={course.parts} />
+    </>
   );
 };
 
 const App = () => {
-  const course = "Half Stack application development";
-  const part1 = "Fundamentals of React";
-  const exercises1 = 10;
-  const part2 = "Using props to pass data";
-  const exercises2 = 7;
-  const part3 = "State of a component";
-  const exercises3 = 14;
+  const course = {
+    id: 1,
+    name: "Half Stack application development",
+    parts: [
+      {
+        name: "Fundamentals of React",
+        exercises: 10,
+        id: 1,
+      },
+      {
+        name: "Using props to pass data",
+        exercises: 7,
+        id: 2,
+      },
+      {
+        name: "State of a component",
+        exercises: 14,
+        id: 3,
+      },
+    ],
+  };
 
-  return (
-    <div>
-      <Header course={course} />
-      <Content
-        part1={part1}
-        exercises1={exercises1}
-        part2={part2}
-        exercises2={exercises2}
-        part3={part3}
-        exercises3={exercises3}
-      />
-      <Total sumOfExercises={exercises1 + exercises2 + exercises3} />
-    </div>
-  );
+  return <Course course={course} />;
 };
 
 export default App;
