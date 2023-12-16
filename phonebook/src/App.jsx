@@ -12,6 +12,21 @@ const App = () => {
   const handlePersonSubmit = (event) => {
     event.preventDefault();
 
+    /*
+    1. Filter out newName from the persons array (ensure both are lowercase)
+    2. If length of returned array isn't 0, show alert and return
+    3. otherwise, store person and reset newName
+     */
+
+    const existingPeople = persons.filter(
+      (person) => person.name.toLowerCase() === newName.toLowerCase()
+    );
+
+    if (existingPeople.length > 0) {
+      alert(`${newName} is already added to the phonebook`);
+      return;
+    }
+
     const newPerson = {
       name: newName,
     };
