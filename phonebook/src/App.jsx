@@ -1,5 +1,18 @@
 import { useState } from "react";
 
+import Form from "./components/Form";
+import Persons from "./components/Persons";
+
+const Filter = ({ filter, handleFilter }) => {
+  //   console.log("Entered Filter component with filter:", filter);
+
+  return (
+    <div>
+      filter shown with: <input value={filter} onChange={handleFilter} />
+    </div>
+  );
+};
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: "Arto Hellas", number: "040-123456", id: 1 },
@@ -60,32 +73,38 @@ const App = () => {
       )
     : persons;
 
+  // Setting input fields in a proper data structure for Form component
+  const inputFields = [
+    {
+      id: 1,
+      name: "name",
+      value: newName,
+      eventHandler: handleNameChange,
+    },
+    {
+      id: 2,
+      name: "number",
+      value: newNumber,
+      eventHandler: handleNumberChange,
+    },
+  ];
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with: <input value={filter} onChange={handleFilter} />
-      </div>
-      <h2>add a new</h2>
-      <form onSubmit={handlePersonSubmit}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
+      <Filter filter={filter} handleFilter={handleFilter} />
 
-      {/* Rendering notes here */}
-      {filteredPeople.map((person) => (
-        <p key={person.name}>
-          {person.name} {person.number}
-        </p>
-      ))}
+      {/* Form to enter user data */}
+      <h2>add a new</h2>
+      <Form
+        submitText="add"
+        submitCallback={handlePersonSubmit}
+        inputFields={inputFields}
+      />
+
+      {/* Rendering people info here */}
+      <h2>Numbers</h2>
+      <Persons persons={filteredPeople} />
     </div>
   );
 };
