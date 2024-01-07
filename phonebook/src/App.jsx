@@ -66,9 +66,14 @@ const App = () => {
       number: newNumber,
     };
 
-    setPersons(persons.concat(newPerson));
-    setNewName(""); // Reset newName input field back to empty string
-    setNewNumber(""); // Reset newNumber input field back to empty string
+    // Update the server with the new note
+
+    axios.post("http://localhost:3001/persons", newPerson).then((response) => {
+      console.log("Successfully stored data to backend server");
+      setPersons(persons.concat(response.data));
+      setNewName(""); // Reset newName input field back to empty string
+      setNewNumber(""); // Reset newNumber input field back to empty string
+    });
   };
 
   const handleFilter = (event) => {
