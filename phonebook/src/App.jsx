@@ -121,7 +121,7 @@ const App = () => {
 
       {/* Rendering people info here */}
       <h2>Numbers</h2>
-      <Persons persons={filteredPeople} />
+      <Persons persons={filteredPeople} renderPersons={setPersons} />
     </div>
   );
 };

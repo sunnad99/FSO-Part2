@@ -18,4 +18,11 @@ const create = (personObj) => {
 }
 
 
-export default {getAll, create}
+const remove = (id) => {
+
+    const url = `${baseUrl}/${id}`;
+    const request = axios.delete(url);
+    return request.then(response => response.data);
+}
+
+export default {getAll, create, remove}
