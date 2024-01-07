@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 
+// importing all components
 import Form from "./components/Form";
 import Persons from "./components/Persons";
+
+// importing backend services
+import personService from "./services/persons";
 
 const Filter = ({ filter, handleFilter }) => {
   //   console.log("Entered Filter component with filter:", filter);
@@ -23,10 +26,10 @@ const App = () => {
   const personEffectHook = () => {
     console.log("Entered persons effect hook!");
 
-    axios.get("http://localhost:3001/persons").then((response) => {
+    personService.getAll().then((initialPersons) => {
       console.log("Successfully retrieved data from the server");
 
-      setPersons(response.data);
+      setPersons(initialPersons);
     });
   };
 
@@ -68,9 +71,9 @@ const App = () => {
 
     // Update the server with the new note
 
-    axios.post("http://localhost:3001/persons", newPerson).then((response) => {
+    personService.create(newPerson).then((returnedPersonObj) => {
       console.log("Successfully stored data to backend server");
-      setPersons(persons.concat(response.data));
+      setPersons(persons.concat(returnedPersonObj));
       setNewName(""); // Reset newName input field back to empty string
       setNewNumber(""); // Reset newNumber input field back to empty string
     });
