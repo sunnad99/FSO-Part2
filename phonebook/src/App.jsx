@@ -59,24 +59,50 @@ const App = () => {
       (person) => person.name.toLowerCase() === newName.toLowerCase()
     );
 
+    // If there exists a record already, try to update the phone number on the backend server
+    // otherwise, just add it to the list
     if (existingPeople.length > 0) {
-      alert(`${newName} is already added to the phonebook`);
-      return;
+      const existingPerson = existingPeople[0];
+      const newPerson = { ...existingPerson, number: newNumber };
+
+      console.log("A person already exists...", newPerson);
+      if (
+        window.confirm(
+          `${newName} is already added to the phonebook, replace the old number with a new one?`
+        )
+      ) {
+        console.log(`User has confirmed the update for ${newPerson}`);
+        personService.update(newPerson.id, newPerson).then((updatedPerson) => {
+          console.log(
+            "The data is stored to the server with object:",
+            updatedPerson
+          );
+
+          // Removing the old object and add the updated one
+          const filteredList = persons
+            .filter((person) => person.id !== newPerson.id)
+            .concat(updatedPerson);
+
+          setPersons(filteredList);
+          setNewName(""); // Reset newName input field back to empty string
+          setNewNumber(""); // Reset newNumber input field back to empty string
+        });
+      }
+    } else {
+      const newPerson = {
+        name: newName,
+        number: newNumber,
+      };
+
+      // Update the server with the new note
+
+      personService.create(newPerson).then((returnedPersonObj) => {
+        console.log("Successfully stored data to backend server");
+        setPersons(persons.concat(returnedPersonObj));
+        setNewName(""); // Reset newName input field back to empty string
+        setNewNumber(""); // Reset newNumber input field back to empty string
+      });
     }
-
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-    };
-
-    // Update the server with the new note
-
-    personService.create(newPerson).then((returnedPersonObj) => {
-      console.log("Successfully stored data to backend server");
-      setPersons(persons.concat(returnedPersonObj));
-      setNewName(""); // Reset newName input field back to empty string
-      setNewNumber(""); // Reset newNumber input field back to empty string
-    });
   };
 
   const handleFilter = (event) => {
