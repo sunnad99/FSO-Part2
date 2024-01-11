@@ -9,7 +9,7 @@ const Person = ({ person, onDelete }) => {
   );
 };
 
-const Persons = ({ persons, renderPersons }) => {
+const Persons = ({ persons, renderPersons, renderNotification }) => {
   console.log("Entered Persons component:", persons);
 
   const deletePerson = (person) => {
@@ -17,6 +17,16 @@ const Persons = ({ persons, renderPersons }) => {
     if (window.confirm(`Delete ${person.name}?`)) {
       personService.remove(person.id).then((response) => {
         console.log("successfully deleted value from the server!");
+
+        // Render notification to let the user know when a successful operation has taken place
+        renderNotification({
+          content: `Successfully deleted ${person.name} from the server!`,
+          isError: false,
+        });
+        setTimeout(() => {
+          renderNotification(null);
+        }, 5000);
+
         renderPersons(persons.filter((p) => p.id !== person.id));
       });
     }
