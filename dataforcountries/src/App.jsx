@@ -21,11 +21,16 @@ const Country = ({ country }) => {
   );
 };
 
-const processResults = (results) => {
+const processResults = (results, showCountry) => {
   console.log("The data to process is:", results);
   if (typeof results === "string") return <p>{results}</p>;
   if (results.length > 1) {
-    return results.map((result) => <p>{result.name.common}</p>);
+    return results.map((result) => (
+      <p>
+        {result.name.common}{" "}
+        <button onClick={() => showCountry([result])}>show</button>
+      </p>
+    ));
   }
 
   return results.map((result) => {
@@ -70,7 +75,7 @@ function App() {
     setCountry(event.target.value);
   };
 
-  const resultsToShow = results ? processResults(results) : <p></p>;
+  const resultsToShow = results ? processResults(results, setResults) : <p></p>;
 
   return (
     <>
