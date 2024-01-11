@@ -1,6 +1,26 @@
 import { useState, useEffect } from "react";
 
 import axios from "axios";
+import apiKey from "./config";
+
+const WeatherReport = ({ weatherDetails }) => {
+  if (!weatherDetails) return <p></p>;
+  const heading = `Weather in ${weatherDetails.name}`;
+  const temperature = weatherDetails.main.temp;
+  const windSpeed = weatherDetails.wind.speed;
+  const weatherIcon = weatherDetails.weather[0].icon;
+  return (
+    <div>
+      <h2>{heading}</h2>
+      <p>temperature: {temperature} Celcius</p>
+      <img
+        src={`https://openweathermap.org/img/wn/${weatherIcon}@2x.png`}
+        alt=""
+      />
+      <p>wind: {windSpeed} m/s</p>
+    </div>
+  );
+};
 
 const Country = ({ country }) => {
   console.log("Entered Country Component with country:", country);
@@ -41,7 +61,9 @@ const processResults = (results, showCountry) => {
 function App() {
   const [country, setCountry] = useState("");
   const [results, setResults] = useState(null);
+  const [weatherReport, setWeatherReport] = useState(null);
 
+  // Effect hook for retrieving country data
   useEffect(() => {
     console.log("Entered the use effect with:", country);
     if (country) {
@@ -71,6 +93,24 @@ function App() {
     }
   }, [country]);
 
+  // Effect hook for retrieving weather report
+  useEffect(() => {
+    // The effect hook runs at least once at the start
+    if (!results) return;
+
+    if (results.length === 1) {
+      // Render the weather report here
+      const countryName = results[0].name.common;
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${countryName}&appid=${apiKey}&units=metric`;
+      axios.get(url).then((response) => {
+        console.log("The weather data is:", response.data);
+        setWeatherReport(response.data);
+      });
+    } else {
+      setWeatherReport(null);
+    }
+  }, [results]);
+
   const handleCountry = (event) => {
     setCountry(event.target.value);
   };
@@ -81,6 +121,7 @@ function App() {
     <>
       find countries <input value={country} onChange={handleCountry} />
       {resultsToShow}
+      <WeatherReport weatherDetails={weatherReport} />
     </>
   );
 }
